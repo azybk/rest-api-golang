@@ -2,8 +2,12 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"rest-api-golang/domain"
 	"rest-api-golang/dto"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type customerService struct {
@@ -32,4 +36,15 @@ func (cs customerService) Index(ctx context.Context) ([]dto.CustomerData, error)
 	}
 
 	return customerData, nil
+}
+
+func (cs customerService) Create(ctx context.Context, req dto.CreateCustomerRequest) error {
+	customer := domain.Customer{
+		ID: uuid.NewString(),
+		Code: req.Code,
+		Name: req.Name,
+		CreatedAt: sql.NullTime{Valid: true, Time: time.Now()},
+	}
+
+	return cs.customerRepository.Save(ctx, &customer)
 }
