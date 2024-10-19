@@ -3,6 +3,12 @@ package config
 type Config struct {
 	Server   Server
 	Database Database
+	Jwt      Jwt
+}
+
+type Jwt struct {
+	Key string
+	Exp int
 }
 
 type Server struct {
