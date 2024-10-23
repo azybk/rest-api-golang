@@ -16,10 +16,22 @@ INSERT INTO customers VALUES(gen_random_uuid(), 'A-001', 'aink tea', '2020-10-09
 go get -u github.com/golang-jwt/jwt/v5 github.com/gofiber/contrib/jwt
 
 CREATE TABLE public.users (
-    id character varying(36) DEFAULT gen_random_uuid() NOT NULL,
-    email character varying(255) NOT NULL,
-    password character varying(255) NOT NULL
+id character varying(36) DEFAULT gen_random_uuid() NOT NULL,
+email character varying(255) NOT NULL,
+password character varying(255) NOT NULL
 );
 
 ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_pk PRIMARY KEY (id);
+ADD CONSTRAINT users_pk PRIMARY KEY (id);
+
+CREATE TABLE books
+(
+id varchar(36) DEFAULT gen_random_uuid() NOT NULL,
+title varchar(255) NOT NULL,
+description text,
+isbn varchar(100) NOT NULL,
+created_at timestamp without time zone,
+updated_at timestamp without time zone,
+deleted_at timestamp without time zone,
+PRIMARY KEY(id)
+);
