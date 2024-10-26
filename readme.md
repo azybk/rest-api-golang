@@ -35,3 +35,12 @@ updated_at timestamp without time zone,
 deleted_at timestamp without time zone,
 PRIMARY KEY(id)
 );
+
+CREATE TABLE book_stocks (
+    book_id character varying(36) NOT NULL,
+    code character varying(50) NOT NULL,
+    status character varying(50) NOT NULL,
+    borrower_id character varying(36),
+    borrowed_at timestamp(6) without time ZONE,
+    PRIMARY KEY (code)
+);
