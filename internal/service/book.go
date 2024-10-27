@@ -12,14 +12,14 @@ import (
 )
 
 type bookService struct {
-	bookRepository domain.BookRepository
-	bookStock      domain.BookStockRepository
+	bookRepository      domain.BookRepository
+	bookStockRepository domain.BookStockRepository
 }
 
-func NewBook(bookRepository domain.BookRepository, bookStock domain.BookStockRepository) domain.BookService {
+func NewBook(bookRepository domain.BookRepository, bookStockRepository domain.BookStockRepository) domain.BookService {
 	return &bookService{
-		bookRepository: bookRepository,
-		bookStock:      bookStock,
+		bookRepository:      bookRepository,
+		bookStockRepository: bookStockRepository,
 	}
 }
 
@@ -99,5 +99,10 @@ func (bs bookService) Delete(ctx context.Context, id string) error {
 		return errors.New("book tidak ditemukan")
 	}
 
-	return bs.bookRepository.Delete(ctx, persisted.Id)
+	err = bs.bookRepository.Delete(ctx, persisted.Id)
+	if err != nil {
+		return err
+	}
+
+	return bs.bookStockRepository.DeleteByBookId(ctx, persisted.Id)
 }
