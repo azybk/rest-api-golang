@@ -19,7 +19,7 @@ func NewBookStock(con *sql.DB) domain.BookStockRepository {
 }
 
 func (b bookStockRepository) FindByBookId(ctx context.Context, id string) (result []domain.BookStock, err error) {
-	dataset := b.db.From("book_stocks").Where(goqu.C("book_id").Eq("id"))
+	dataset := b.db.From("book_stocks").Where(goqu.C("book_id").Eq(id))
 	err = dataset.ScanStructsContext(ctx, &result)
 	return
 }

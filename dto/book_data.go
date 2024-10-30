@@ -7,6 +7,16 @@ type BookData struct {
 	Isbn        string `json:"isbn"`
 }
 
+type BookStockData struct {
+	Code   string `json:"code"`
+	Status string `json:"status"`
+}
+
+type BookShowData struct {
+	BookData
+	Stocks []BookStockData `json:"stocks"`
+}
+
 type CreateBookRequest struct {
 	Title       string `json:"title" validate:"required"`
 	Description string `json:"description" validate:"required"`
