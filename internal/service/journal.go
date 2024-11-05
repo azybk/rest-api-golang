@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"rest-api-golang/domain"
 	"rest-api-golang/dto"
 	"time"
@@ -116,6 +117,10 @@ func (j journalService) Create(ctx context.Context, req dto.CreateJournalRequest
 		return domain.BookNotFound
 	}
 
+	if stock.Status != domain.BookStockAvail {
+		return errors.New("buku sudah dipinjam dan belum dikembalikan")
+	}
+
 	journal := domain.Journal{
 		Id:         uuid.NewString(),
 		BookId:     req.BookId,
@@ -133,7 +138,7 @@ func (j journalService) Create(ctx context.Context, req dto.CreateJournalRequest
 	stock.Status = domain.BookStockBorrowed
 	stock.BorrowedAt = journal.BorrowedAt
 	stock.BorrowerId = sql.NullString{Valid: true, String: journal.CustomerId}
-	return j.bookStockRepository.Save(ctx, []domain.BookStock{stock})
+	return j.bookStockRepository.Update(ctx, &stock)
 }
 
 func (j journalService) Return(ctx context.Context, req dto.ReturnedJournalRequest) error {
@@ -156,7 +161,7 @@ func (j journalService) Return(ctx context.Context, req dto.ReturnedJournalReque
 		stock.BorrowedAt = sql.NullTime{Valid: false}
 		stock.BorrowerId = sql.NullString{Valid: false}
 
-		err = j.bookStockRepository.Save(ctx, []domain.BookStock{stock})
+		err = j.bookStockRepository.Update(ctx, &stock)
 		if err != nil {
 			return err
 		}

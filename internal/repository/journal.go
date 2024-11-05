@@ -40,7 +40,7 @@ func (j journalRepository) FindById(ctx context.Context, id string) (result doma
 }
 
 func (j journalRepository) Save(ctx context.Context, journal *domain.Journal) error {
-	executor := j.db.Insert("journals").Executor()
+	executor := j.db.Insert("journals").Rows(journal).Executor()
 	_, err := executor.ExecContext(ctx)
 	return err
 }
