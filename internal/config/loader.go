@@ -21,6 +21,7 @@ func Get() *Config {
 		Server: Server{
 			Host: os.Getenv("SERVER_HOST"),
 			Port: os.Getenv("SERVER_PORT"),
+			Asset: os.Getenv("SERVER_ASSET_PATH"),
 		},
 		Database: Database{
 			Host: os.Getenv("DB_HOST"),
@@ -33,6 +34,9 @@ func Get() *Config {
 		Jwt: Jwt{
 			Key: os.Getenv("JWT_KEY"),
 			Exp: ExpInt,
+		},
+		Storage: Storage{
+			BasePath: os.Getenv("STORAGE_PATH"),
 		},
 	}
 }

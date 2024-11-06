@@ -77,11 +77,17 @@ func (bs bookService) Show(ctx context.Context, id string) (dto.BookShowData, er
 }
 
 func (bs bookService) Create(ctx context.Context, req dto.CreateBookRequest) error {
+	coverId := sql.NullString{Valid: false, String: req.CoverId}
+	if req.CoverId != "" {
+		coverId.Valid = true
+	}
+
 	book := domain.Book{
 		Id:          uuid.NewString(),
 		Title:       req.Title,
 		Description: req.Description,
 		Isbn:        req.Isbn,
+		CoverId: coverId,
 		CreatedAt:   sql.NullTime{Valid: true, Time: time.Now()},
 	}
 	return bs.bookRepository.Save(ctx, &book)
@@ -97,9 +103,15 @@ func (bs bookService) Update(ctx context.Context, req dto.UpdateBookRequest) err
 		return errors.New("book tidak ditemukan")
 	}
 
+	coverId := sql.NullString{Valid: false, String: req.CoverId}
+	if req.CoverId != "" {
+		coverId.Valid = true
+	}
+
 	persisted.Title = req.Title
 	persisted.Description = req.Description
 	persisted.Isbn = req.Isbn
+	persisted.CoverId = coverId
 	persisted.UpdatedAt = sql.NullTime{Valid: true, Time: time.Now()}
 
 	return bs.bookRepository.Update(ctx, &persisted)

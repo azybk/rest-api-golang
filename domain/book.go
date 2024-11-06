@@ -11,6 +11,7 @@ type Book struct {
 	Isbn        string       `db:"isbn"`
 	Title       string       `db:"title"`
 	Description string       `db:"description"`
+	CoverId sql.NullString `db:"cover_id"`
 	CreatedAt   sql.NullTime `db:"created_at"`
 	UpdatedAt   sql.NullTime `db:"updated_at"`
 	DeletedAt   sql.NullTime `db:"deleted_at"`

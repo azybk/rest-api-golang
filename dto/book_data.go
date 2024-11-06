@@ -21,6 +21,7 @@ type CreateBookRequest struct {
 	Title       string `json:"title" validate:"required"`
 	Description string `json:"description" validate:"required"`
 	Isbn        string `json:"isbn" validate:"required"`
+	CoverId     string `json:"cover_id"`
 }
 
 type UpdateBookRequest struct {
@@ -28,4 +29,5 @@ type UpdateBookRequest struct {
 	Title       string `json:"title" validate:"required"`
 	Description string `json:"description" validate:"required"`
 	Isbn        string `json:"isbn" validate:"required"`
+	CoverId     string `json:"cover_id"`
 }
