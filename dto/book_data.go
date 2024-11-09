@@ -3,6 +3,7 @@ package dto
 type BookData struct {
 	Id          string `json:"id"`
 	Title       string `json:"title"`
+	Coverurl    string `json:"cover_url"`
 	Description string `json:"description"`
 	Isbn        string `json:"isbn"`
 }

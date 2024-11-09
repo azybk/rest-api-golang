@@ -20,11 +20,12 @@ func NewBook(app *fiber.App, bookService domain.BookService, autMid fiber.Handle
 		bookService: bookService,
 	}
 
-	app.Get("/books", autMid, b.Index)
-	app.Post("/book", autMid, b.Create)
-	app.Get("/book/:id", autMid, b.Show)
-	app.Put("/book/:id", autMid, b.Update)
-	app.Delete("/book/:id", autMid, b.Delete)
+	books := app.Group("/books", autMid)
+	books.Get("", b.Index)
+	books.Post("", b.Create)
+	books.Get(":id", b.Show)
+	books.Put(":id", b.Update)
+	books.Delete(":id", b.Delete)
 }
 
 func (b bookApi) Index(ctx *fiber.Ctx) error {

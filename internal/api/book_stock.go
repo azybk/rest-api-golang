@@ -21,12 +21,13 @@ func NewBookStock(app *fiber.App, bookStockService domain.BookStockService, auth
 		bookStockService: bookStockService,
 	}
 
-	app.Post("/book-stocks", authMid, bsa.Create)
-	app.Delete("/book-stocks", authMid, bsa.Delete)
+	bookStock := app.Group("/book-stocks", authMid)
+	bookStock.Post("", bsa.Create)
+	bookStock.Delete("", bsa.Delete)
 }
 
 func (ba bookStockApi) Create(ctx *fiber.Ctx) error {
-	c, cancel := context.WithTimeout(ctx.Context(), 10 * time.Second)
+	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
 	var req dto.CreateBookStockRequest
@@ -48,7 +49,7 @@ func (ba bookStockApi) Create(ctx *fiber.Ctx) error {
 }
 
 func (ba bookStockApi) Delete(ctx *fiber.Ctx) error {
-	c, cancel := context.WithTimeout(ctx.Context(), 10 * time.Second)
+	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
 	// ?code=
@@ -58,7 +59,7 @@ func (ba bookStockApi) Delete(ctx *fiber.Ctx) error {
 	}
 
 	codes := strings.Split(codeStr, ";")
-	
+
 	err := ba.bookStockService.Delete(c, dto.DeleteBookStockRequest{Codes: codes})
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).JSON(dto.CreateResponseError(err.Error()))

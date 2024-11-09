@@ -14,22 +14,23 @@ import (
 )
 
 type mediaApi struct {
-	conf *config.Config
+	conf         *config.Config
 	mediaService domain.MediaService
 }
 
 func NewMedia(app *fiber.App, conf *config.Config, mediaService domain.MediaService, authMid fiber.Handler) {
 	ma := mediaApi{
-		conf: conf,
+		conf:         conf,
 		mediaService: mediaService,
 	}
 
-	app.Post("/media", authMid, ma.Create)
+	media := app.Group("/media", authMid)
+	media.Post("", ma.Create)
 	app.Static("/media", conf.Storage.BasePath)
 }
 
 func (ma mediaApi) Create(ctx *fiber.Ctx) error {
-	c, cancel := context.WithTimeout(ctx.Context(), 10 * time.Second)
+	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
 	file, err := ctx.FormFile("media")

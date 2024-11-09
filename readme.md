@@ -66,3 +66,17 @@ path text,
 created_at timestamp without time ZONE,
 PRIMARY KEY(id)
 );
+
+alter table journals
+add due_at timestamp without time zone default null;
+
+CREATE TABLE public.charges (
+    id character varying(36) NOT NULL,
+    journal_id character varying(36) NOT NULL,
+    days_late integer DEFAULT 1 NOT NULL,
+    daily_late_fee integer NOT NULL,
+    total integer NOT NULL,
+    user_id character varying(36) NOT NULL,
+    created_at timestamp(6) without time zone,
+    primary key(id)
+);

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type journalApi struct {
@@ -20,13 +21,14 @@ func NewJournal(app *fiber.App, jornalService domain.JournalService, authMid fib
 		journalService: jornalService,
 	}
 
-	app.Get("/journals", authMid, ja.Index)
-	app.Post("/journal", authMid, ja.Create)
-	app.Put("/journal/:id", authMid, ja.Update)
+	journals := app.Group("/journals", authMid)
+	journals.Get("", ja.Index)
+	journals.Post("", ja.Create)
+	journals.Put(":id", ja.Update)
 }
 
 func (ja journalApi) Index(ctx *fiber.Ctx) error {
-	c, cancel := context.WithTimeout(ctx.Context(), 10 * time.Second)
+	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
 	customerId := ctx.Query("customer_id")
@@ -34,7 +36,7 @@ func (ja journalApi) Index(ctx *fiber.Ctx) error {
 
 	res, err := ja.journalService.Index(c, domain.JournalSearch{
 		CustomerId: customerId,
-		Status: status,
+		Status:     status,
 	})
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).JSON(dto.CreateResponseError(err.Error()))
@@ -44,7 +46,7 @@ func (ja journalApi) Index(ctx *fiber.Ctx) error {
 }
 
 func (ja journalApi) Create(ctx *fiber.Ctx) error {
-	c, cancel := context.WithTimeout(ctx.Context(), 10 * time.Second)
+	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
 	var req dto.CreateJournalRequest
@@ -66,12 +68,15 @@ func (ja journalApi) Create(ctx *fiber.Ctx) error {
 }
 
 func (ja journalApi) Update(ctx *fiber.Ctx) error {
-	c, cancel := context.WithTimeout(ctx.Context(), 10 * time.Second)
+	c, cancel := context.WithTimeout(ctx.Context(), 10*time.Second)
 	defer cancel()
 
 	id := ctx.Params("id")
+	claim := ctx.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
+
 	err := ja.journalService.Return(c, dto.ReturnedJournalRequest{
 		JournalId: id,
+		UserId:    claim["id"].(string),
 	})
 
 	if err != nil {
