@@ -80,3 +80,5 @@ CREATE TABLE public.charges (
     created_at timestamp(6) without time zone,
     primary key(id)
 );
+
+create storage folder (for saving image) in root 
